@@ -1,0 +1,14 @@
+$card-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+$card-shadow-hover: 0 8px 16px 0 rgba(0,0,0,0.2);
+
+.grid_item {
+	background-color: #FFF;
+	border-radius: 2.5%;
+	box-shadow: $card-shadow;
+	margin: 0.1em;
+	padding: 0.8em 0.6em;
+	transition: 0.2s;
+	&:hover {
+		box-shadow: $card-shadow-hover;
+	}
+}

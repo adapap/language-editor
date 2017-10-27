@@ -1,0 +1,21 @@
+body, html {
+	height: 100%;
+}
+
+.content {
+	left: 0;
+	position: fixed;
+	right: 0;
+	z-index: 999;
+}
+
+.wordBackground {
+	background: url(styles/img/wordBackground.jpg) center center;
+	display: block;
+	filter: blur(8px);
+	height: 100%;
+	left: 0;
+	position: fixed;
+	right: 0;
+	z-index: 1
+}
