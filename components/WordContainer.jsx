@@ -79,10 +79,8 @@ export default class WordContainer extends React.Component {
 
 		if (viewType == "grid") {
 			return ( 
-				<div className="pure-g"><div className="pure-u-3-4">
-					<GridView wordData={data} />
-					</div>
-				</div>)
+				<div className="pure-g grid_view"><GridView wordData={data} /></div>
+				)
 
 		}
 

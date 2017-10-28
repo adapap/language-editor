@@ -1,0 +1,7 @@
+> Create Editor Interface
+	> Interact with MongoDB
+		> Require User Authentification
+	> Visual Elements of Editor Interface
+> Search
+	> UI
+	> Filters/Sorting

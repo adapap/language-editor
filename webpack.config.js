@@ -9,7 +9,7 @@ module.exports = {
 	module: {
 		rules: [
 			{ test: /\.jsx?$/, loader: 'babel-loader' },
-			{ test: /\.s[ac]ss$/, use: [ 'style-loader', 'css-loader', 'sass-loader' ]},
+			{ test: /\.scss$/, use: [ 'style-loader', 'css-loader', 'sass-loader' ]},
 			{ test: /\.jpg$/, loader: "file-loader?name=[path][name].[ext]" }
 		]
 	},

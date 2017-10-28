@@ -14,6 +14,7 @@ class MyClass extends React.Component {
 			age: 18
 		})
 	}
+
 	render() {
 		return <div>Hello, my name is {this.state.name}. I am {this.state.age} year(s) old.</div>
 	}

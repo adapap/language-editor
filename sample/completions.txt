@@ -1,0 +1,19 @@
+# JavaScript
+? => ternany operator
+case => case n for switch statement
+cl => console.log("")
+swi => switch statement setup
+
+# React
+rcomp => React Component boilerplate
+rimp => Import (component) from (component folder)
+rmap => Map array for React
+
+#HTML
+doc => Basic HTML tag setup
+pg => pure-g <div>
+pu => pure-u <div>
+pu1 => pure-u-1 <div>
+
+#CSS
+bb => border: 1px solid black;

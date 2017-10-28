@@ -1,14 +1,33 @@
-$card-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-$card-shadow-hover: 0 8px 16px 0 rgba(0,0,0,0.2);
+$card-shadow: 0 0 25px 0 rgba(0,0,0,0.1);
+$card-shadow-hover: 0 0 25px 0 rgba(0,0,0,0.4);
+
+card-preset {
+	background-color: #FFF;
+	box-shadow: $card-shadow;
+	padding: 0.6em;
+}
+
+.full_item {
+	@extend card-preset;
+	margin: 0.15em;
+}
 
 .grid_item {
-	background-color: #FFF;
-	border-radius: 2.5%;
-	box-shadow: $card-shadow;
-	margin: 0.1em;
-	padding: 0.8em 0.6em;
-	transition: 0.2s;
+	@extend card-preset;
+	margin: 0.15em;
+	transition: 0.3s;
+	width: 7.5em;
+	&:active {
+		box-shadow: $card-shadow-hover;
+		transform: scale(1.5);
+		transition: 2s;
+	}
 	&:hover {
 		box-shadow: $card-shadow-hover;
+		cursor: pointer;
 	}
+}
+
+.grid_view {
+	margin: 0.5em;
 }

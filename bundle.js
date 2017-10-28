@@ -993,6 +993,7 @@ var Word = function (_React$Component) {
 	_createClass(Word, [{
 		key: 'partOfSpeechShort',
 		value: function partOfSpeechShort(s) {
+			//Abbreviate parts of speech
 			var key = {
 				'noun': 'n.',
 				'verb': 'v.',
@@ -1007,33 +1008,37 @@ var Word = function (_React$Component) {
 		}
 	}, {
 		key: 'setMeanings',
-		value: function setMeanings(a) {
-			//1D or 2D array of meanings
+		value: function setMeanings(a, d) {
+			//1D or 2D array of meanings, full display boolean d
 			//a: array, i: index, s: string output, p: part of speech
-			//Shorten to 4 items for 1D array
-			var p = this.props.wordPartOfSpeech;
+			//Shorten to 4 items for 1D array, add "..." if longer
+			var p = !d ? this.props.wordPartOfSpeech : this.props.wordData.partOfSpeech;
 			if (typeof a[0] === 'string') {
-				if (a.length > 4) {
+				if (a.length > 4 && !d) {
 					a.splice(4);
 					return '[' + this.partOfSpeechShort(p[0]) + '] ' + a.join(', ') + '...';
 				}
 				return '[' + this.partOfSpeechShort(p[0]) + '] ' + a.join(', ');
-			} else {
-				var s = '';
-				for (var i = 0; i < a.length; i++) {
-					if (s.length < 50) {
-						s += i == a.length - 1 ? '[' + this.partOfSpeechShort(p[i]) + '] ' + a[i].join(', ') : '[' + this.partOfSpeechShort(p[i]) + '] ' + a[i].join(', ') + ' ';
-					}
-				}
-				return s;
 			}
+			//Limit to 50 characters instead of 4 words
+			else {
+					var s = '';
+					for (var i = 0; i < a.length; i++) {
+						if (s.length < 50 && !d) {
+							s += i == a.length - 1 ? '[' + this.partOfSpeechShort(p[i]) + '] ' + a[i].join(', ') : '[' + this.partOfSpeechShort(p[i]) + '] ' + a[i].join(', ') + ' ';
+						} else if (d) {
+							s += '[' + this.partOfSpeechShort(p[i]) + '] ' + a[i].join(', ') + ' ';
+						}
+					}
+					return s;
+				}
 		}
 	}, {
 		key: 'setPartOfSpeech',
-		value: function setPartOfSpeech(a) {
+		value: function setPartOfSpeech(a, d) {
 			var _this2 = this;
 
-			//1D array of meanings
+			//1D array of meanings, full display boolean d
 			return a.map(function (e) {
 				return _this2.partOfSpeechShort(e);
 			}).join(' | ');
@@ -1044,7 +1049,7 @@ var Word = function (_React$Component) {
 			if (this.props.wordType == "grid") {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'pure-g' },
+					{ className: 'pure-g grid_word' },
 					_react2.default.createElement(
 						'div',
 						{ className: 'pure-u-1 word_name' },
@@ -1053,15 +1058,46 @@ var Word = function (_React$Component) {
 					_react2.default.createElement(
 						'div',
 						{ className: 'pure-u-1 word_partOfSpeech' },
-						this.setPartOfSpeech(this.props.wordPartOfSpeech)
+						this.setPartOfSpeech(this.props.wordPartOfSpeech, 0)
 					),
 					_react2.default.createElement(
 						'div',
 						{ className: 'pure-u-1 word_meanings' },
-						this.setMeanings(this.props.wordMeanings)
+						this.setMeanings(this.props.wordMeanings, 0)
 					)
 				);
-			} else if (this.props.wordType == "list") {} else if (this.props.wordType == "full") {}
+			} else if (this.props.wordType == "list") {} else if (this.props.wordType == "full") {
+				var wordData = this.props.wordData;
+				return _react2.default.createElement(
+					'div',
+					{ className: 'pure-g full_word' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'pure-u-1 word_name' },
+						wordData.name
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'pure-u-1 word_partOfSpeech' },
+						'Parts of Speech: ',
+						this.setPartOfSpeech(wordData.partOfSpeech, 1)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'pure-u-1 word_meanings' },
+						'Meanings: ',
+						this.setMeanings(wordData.meanings, 1)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'pure-u-1 word_id' },
+						'ID: ',
+						wordData.id
+					)
+				);
+			} else {
+				return _react2.default.createElement('div', null);
+			}
 		}
 	}]);
 
@@ -9835,12 +9871,8 @@ var WordContainer = function (_React$Component) {
 			if (viewType == "grid") {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'pure-g' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'pure-u-3-4' },
-						_react2.default.createElement(_GridView2.default, { wordData: data })
-					)
+					{ className: 'pure-g grid_view' },
+					_react2.default.createElement(_GridView2.default, { wordData: data })
 				);
 			} else if (viewType == "list") {
 				return _react2.default.createElement(_ListView2.default, null);
@@ -9888,21 +9920,20 @@ var GridView = function (_React$Component) {
 	function GridView(props) {
 		_classCallCheck(this, GridView);
 
-		return _possibleConstructorReturn(this, (GridView.__proto__ || Object.getPrototypeOf(GridView)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (GridView.__proto__ || Object.getPrototypeOf(GridView)).call(this, props));
+
+		_this.state = {
+			fullWord: null
+		};
+		_this.handleWordClick = _this.handleWordClick.bind(_this);
+		return _this;
 	}
 
 	_createClass(GridView, [{
-		key: 'renderList',
-		value: function renderList() {
-			return this.props.wordData.map(function (val) {
-				return _react2.default.createElement(
-					'div',
-					{ key: val.id.toString(), className: 'pure-u-1-8 grid_item' },
-					_react2.default.createElement(_Word2.default, { wordType: 'grid',
-						wordName: val.name,
-						wordPartOfSpeech: val.partOfSpeech,
-						wordMeanings: val.meanings })
-				);
+		key: 'handleWordClick',
+		value: function handleWordClick(data) {
+			this.setState({
+				fullWord: data
 			});
 		}
 	}, {
@@ -9911,8 +9942,52 @@ var GridView = function (_React$Component) {
 			return _react2.default.createElement(
 				'div',
 				{ className: 'pure-g' },
-				this.renderList()
+				_react2.default.createElement(
+					'div',
+					{ className: 'pure-u-3-4' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'pure-g' },
+						this.renderList()
+					)
+				),
+				this.state.fullWord ? _react2.default.createElement(
+					'div',
+					{ className: 'pure-u-1-4' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'pure-g full_item' },
+						this.renderFullWord()
+					)
+				) : null
 			);
+		}
+	}, {
+		key: 'renderFullWord',
+		value: function renderFullWord() {
+			return _react2.default.createElement(_Word2.default, { wordType: 'full',
+				wordData: this.state.fullWord
+			});
+		}
+	}, {
+		key: 'renderList',
+		value: function renderList() {
+			var _this2 = this;
+
+			return this.props.wordData.map(function (val) {
+				return _react2.default.createElement(
+					'div',
+					{ key: val.id.toString(),
+						onClick: function onClick() {
+							return _this2.handleWordClick(val);
+						},
+						className: 'pure-u-1-8 grid_item' },
+					_react2.default.createElement(_Word2.default, { wordType: 'grid',
+						wordName: val.name,
+						wordPartOfSpeech: val.partOfSpeech,
+						wordMeanings: val.meanings })
+				);
+			});
 		}
 	}]);
 
@@ -10015,7 +10090,7 @@ exports = module.exports = __webpack_require__(39)(undefined);
 
 
 // module
-exports.push([module.i, "body, html {\n  height: 100%; }\n\n.content {\n  left: 0;\n  position: fixed;\n  right: 0;\n  z-index: 999; }\n\n.wordBackground {\n  background: url(" + __webpack_require__(40) + ") center center;\n  display: block;\n  filter: blur(8px);\n  height: 100%;\n  left: 0;\n  position: fixed;\n  right: 0;\n  z-index: 1; }\n\n.word_name {\n  font-size: 20px; }\n\n.word_meanings {\n  font-size: 12px;\n  padding-top: 0.4em; }\n\n.word_partOfSpeech {\n  border-bottom: 1px solid lightgray;\n  font-size: 14px;\n  font-style: italic;\n  padding-bottom: 0.2em; }\n\n.grid_item {\n  background-color: #FFF;\n  border-radius: 2.5%;\n  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);\n  margin: 0.1em;\n  padding: 0.8em 0.6em;\n  transition: 0.2s; }\n  .grid_item:hover {\n    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); }\n", ""]);
+exports.push([module.i, "body, html {\n  height: 100%; }\n\n.content {\n  left: 0;\n  position: fixed;\n  right: 0;\n  z-index: 999; }\n\n.wordBackground {\n  background: url(" + __webpack_require__(40) + ") center center;\n  display: block;\n  filter: blur(8px) opacity(70%);\n  height: 100%;\n  left: 0;\n  position: fixed;\n  right: 0;\n  z-index: 1; }\n\n.full_word .word_id {\n  color: #888;\n  font-size: 10px;\n  text-align: right; }\n\n.full_word .word_meanings {\n  font-size: 12px;\n  padding-top: 0.4em; }\n\n.full_word .word_name {\n  font-size: 16px; }\n\n.full_word .word_partOfSpeech {\n  border-bottom: 1px solid lightgray;\n  font-size: 12px;\n  padding-bottom: 0.2em; }\n\n.grid_word .word_name {\n  font-size: 20px; }\n\n.grid_word .word_meanings {\n  font-size: 12px;\n  padding-top: 0.4em; }\n\n.grid_word .word_partOfSpeech {\n  border-bottom: 1px solid lightgray;\n  font-size: 14px;\n  font-style: italic;\n  padding-bottom: 0.2em; }\n\ncard-preset, .full_item, .grid_item {\n  background-color: #FFF;\n  box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);\n  padding: 0.6em; }\n\n.full_item {\n  margin: 0.15em; }\n\n.grid_item {\n  margin: 0.15em;\n  transition: 0.3s;\n  width: 7.5em; }\n  .grid_item:active {\n    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.4);\n    transform: scale(1.5);\n    transition: 2s; }\n  .grid_item:hover {\n    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.4);\n    cursor: pointer; }\n\n.grid_view {\n  margin: 0.5em; }\n", ""]);
 
 // exports
 

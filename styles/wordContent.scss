@@ -1,0 +1,40 @@
+.full_word {
+	.word_id {
+		color: #888;
+		font-size: 10px;
+		text-align: right;
+	}
+
+	.word_meanings {
+		font-size: 12px;
+		padding-top: 0.4em;
+	}
+
+	.word_name {
+		font-size: 16px;
+	}
+
+	.word_partOfSpeech {
+		border-bottom: 1px solid lightgray;
+		font-size: 12px;
+		padding-bottom: 0.2em;
+	}
+}
+
+.grid_word {
+	.word_name {
+		font-size: 20px;
+	}
+
+	.word_meanings {
+		font-size: 12px;
+		padding-top: 0.4em;
+	}
+
+	.word_partOfSpeech {
+		border-bottom: 1px solid lightgray;
+		font-size: 14px;
+		font-style: italic;
+		padding-bottom: 0.2em;
+	}
+}
